@@ -230,7 +230,7 @@ namespace Raven.Identity
     /// <param name="roleName">The name of the role.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-    public Task SetRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task SetRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken = default(CancellationToken))
     {
       cancellationToken.ThrowIfCancellationRequested();
       ThrowIfDisposed();
@@ -238,8 +238,11 @@ namespace Raven.Identity
       {
         throw new ArgumentNullException(nameof(role));
       }
-      role.Name = roleName;
-      return Task.CompletedTask;
+      using (IAsyncDocumentSession session = Store.OpenAsyncSession())
+      {
+        role.Name = roleName;
+        await session.SaveChangesAsync(cancellationToken);
+      }
     }
 
     /// <summary>
@@ -359,7 +362,7 @@ namespace Raven.Identity
     /// <param name="claim">The claim to add to the role.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-    public Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default(CancellationToken))
     {
       ThrowIfDisposed();
       if (role == null)
@@ -370,9 +373,12 @@ namespace Raven.Identity
       {
         throw new ArgumentNullException(nameof(claim));
       }
-      role.Claims.Add(CreateRoleClaim(role, claim));
 
-      return Task.FromResult(false);
+      using (IAsyncDocumentSession session = Store.OpenAsyncSession())
+      {
+        role.Claims.Add(CreateRoleClaim(role, claim));
+        await session.SaveChangesAsync(cancellationToken);
+      }
     }
 
     /// <summary>
@@ -394,12 +400,14 @@ namespace Raven.Identity
         throw new ArgumentNullException(nameof(claim));
       }
 
-      await Task.FromResult(0);
-
-      var claims = role.Claims.Where(c => c.ClaimValue == claim.Value).ToList();
-      foreach (var c in claims)
+      using (IAsyncDocumentSession session = Store.OpenAsyncSession())
       {
-        role.Claims.Remove(c);
+        var claims = role.Claims.Where(c => c.ClaimValue == claim.Value).ToList();
+        foreach (var c in claims)
+        {
+          role.Claims.Remove(c);
+        }
+        await session.SaveChangesAsync(cancellationToken);
       }
     }
 

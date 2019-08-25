@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>RavenDB.Identity</AssemblyName>
     <Title>RavenDB Identity for ASP.NET Core</Title>
-    <PackageId>RavenDB.Identity</PackageId>
+    <PackageId>RavenDB.IdentityVT</PackageId>
     <PackageTags>ravendb identity aspnetcore membership authentication nosql authorization</PackageTags>
     <PackageProjectUrl>https://github.com/JudahGabriel/RavenDB.Identity</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
@@ -19,7 +19,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>6.1</Version>
+    <Version>16.1</Version>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <RootNamespace>Raven.Identity</RootNamespace>
     <PackageReleaseNotes>Custom IdentityRole types are stored using their type name in the ID. UserStore can now handle custom IdentityRole types.</PackageReleaseNotes>
@@ -29,7 +29,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="RavenDB.Client" Version="4.2.0" />
+    <PackageReference Include="RavenDB.Client" Version="4.2.2" />
   </ItemGroup>
 
   <ItemGroup>
